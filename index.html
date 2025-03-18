@@ -63,14 +63,13 @@
     </div>
     
     <redoc spec-url="https://inf.flexblok.io/besu-api/swagger.json"></redoc>
-
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-          setTimeout(() => {
-              let urls = document.querySelectorAll(".http-url");
-              urls.forEach(url => url.innerHTML = url.innerHTML.replace("https://inf.flexblok.io/besu-api", ""));
-          }, 2000);
-      });
+      setTimeout(() => {
+          document.querySelectorAll(".http-url").forEach(el => el.style.display = "none");
+        }, 2000);
+    });
     </script>
+
   </body>
 </html>

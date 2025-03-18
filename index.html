@@ -39,28 +39,38 @@
           height: calc(100vh - 80px);
       }
 
-      /* Hide Base URL */
-      .api-content h2 small {
-          display: none !important;
-      }
-      .redoc-json-schema-view .json-schema-row:first-child {
+      /* Hide "Servers" (Base URL) section */
+      .redoc-wrap .api-info-server {
           display: none !important;
       }
 
-      /* Hide Base URL inside request boxes */
-      .redoc-wrap .http-url {
+      /* Hide Base URL in endpoint requests */
+      .redoc-wrap .http-url, .api-content small {
           display: none !important;
       }
+      
+      /* Hide Base URL in Try-It-Out Section */
+      .redoc-wrap .servers-title, 
+      .redoc-wrap .servers, 
+      .redoc-wrap .server-url {
+          display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-header">
+        <img src="flexblok-logo.png" alt="FLEXBLOK Logo">
+    </div>
+    
+    <redoc spec-url="https://inf.flexblok.io/besu-api/swagger.json"></redoc>
 
-  </style>
-</head>
-<body>
-  <div class="top-header">
-      <img src="flexblok-logo.png" alt="FLEXBLOK Logo">
-  </div>
-  
-  <redoc spec-url="https://inf.flexblok.io/besu-api/swagger.json"></redoc>
-  
-  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          setTimeout(() => {
+              let urls = document.querySelectorAll(".http-url");
+              urls.forEach(url => url.innerHTML = url.innerHTML.replace("https://inf.flexblok.io/besu-api", ""));
+          }, 2000);
+      });
+    </script>
+  </body>
 </html>

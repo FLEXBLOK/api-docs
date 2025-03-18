@@ -45,14 +45,11 @@
       }
 
       /* Hide Base URL in endpoint requests */
-      .redoc-wrap .http-url, .api-content small {
-          display: none !important;
-      }
-      
-      /* Hide Base URL in Try-It-Out Section */
-      .redoc-wrap .servers-title, 
-      .redoc-wrap .servers, 
-      .redoc-wrap .server-url {
+      .redoc-wrap .http-url, 
+      .redoc-wrap .server-url, 
+      .redoc-wrap .servers-title,
+      .redoc-wrap .servers,
+      .api-content small {
           display: none !important;
       }
     </style>
@@ -63,13 +60,13 @@
     </div>
     
     <redoc spec-url="https://inf.flexblok.io/besu-api/swagger.json"></redoc>
+    
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-      setTimeout(() => {
-          document.querySelectorAll(".http-url").forEach(el => el.style.display = "none");
-        }, 2000);
-    });
+          setTimeout(() => {
+              document.querySelectorAll(".http-url, .server-url, .servers-title, .servers").forEach(el => el.style.display = "none");
+          }, 3000); // Increased delay for Redoc rendering
+      });
     </script>
-
   </body>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>FLEXBLOK API Reference</title>
+    <title>FLEXBLOK API Docs</title>
     <link rel="icon" type="image/png" href="favicon.png"/>
     <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
     <style>
@@ -35,38 +35,59 @@
       }
       
       /* Ensure the main content height is correct */
-      redoc {
+      #redoc-container {
           height: calc(100vh - 80px);
       }
 
-      /* Hide "Servers" (Base URL) section */
-      .redoc-wrap .api-info-server {
+      /* Hide Base URL */
+      .api-content h2 small {
+          display: none !important;
+      }
+      .redoc-json-schema-view .json-schema-row:first-child {
           display: none !important;
       }
 
-      /* Hide Base URL in endpoint requests */
-      .redoc-wrap .http-url, 
-      .redoc-wrap .server-url, 
-      .redoc-wrap .servers-title,
-      .redoc-wrap .servers,
-      .api-content small {
+      /* Hide Base URL inside request boxes */
+      .redoc-wrap .http-url {
           display: none !important;
       }
-    </style>
-  </head>
-  <body>
-    <div class="top-header">
-        <img src="flexblok-logo.png" alt="FLEXBLOK Logo">
-    </div>
-    
-    <redoc spec-url="https://inf.flexblok.io/besu-api/swagger.json"></redoc>
-    
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          setTimeout(() => {
-              document.querySelectorAll(".http-url, .server-url, .servers-title, .servers").forEach(el => el.style.display = "none");
-          }, 3000); // Increased delay for Redoc rendering
-      });
-    </script>
-  </body>
+  </style>
+</head>
+<body>
+  <div class="top-header">
+      <img src="flexblok-logo.png" alt="FLEXBLOK Logo">
+  </div>
+
+  <div id="redoc-container"></div>
+
+  <script>
+    async function fetchAndModifySpec() {
+        try {
+            const response = await fetch("https://inf.flexblok.io/besu-api/swagger.json");
+            let spec = await response.json();
+
+            // Remove "/besu-api/" from server URL
+            if (spec.servers && spec.servers.length > 0) {
+                spec.servers[0].url = "/";
+            }
+
+            // Remove "/besu-api/" from all paths
+            let newPaths = {};
+            for (let path in spec.paths) {
+                let newPath = path.replace(/^\/besu-api/, ""); 
+                newPaths[newPath] = spec.paths[path];
+            }
+            spec.paths = newPaths;
+
+            // Load Redoc with the modified spec
+            Redoc.init(spec, { hideHostname: true }, document.getElementById("redoc-container"));
+
+        } catch (error) {
+            console.error("Error loading OpenAPI spec:", error);
+        }
+    }
+
+    fetchAndModifySpec();
+  </script>
+</body>
 </html>

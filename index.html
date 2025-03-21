@@ -74,18 +74,18 @@
               const response = await fetch("https://inf.flexblok.io/besu-api/swagger.json");
               let spec = await response.json();
 
-              // Remove "/besu-api/" from server URL
-              if (spec.servers && spec.servers.length > 0) {
-                  spec.servers[0].url = "/";
-              }
+             // Remove "/besu-api/" from server URL
+            if (spec.servers && spec.servers.length > 0) {
+                spec.servers[0].url = "/";
+            }
 
-              // Remove "/besu-api/" from all paths
-              let newPaths = {};
-              for (let path in spec.paths) {
-                  let newPath = path.replace(/^\/besu-api/, ""); 
-                  newPaths[newPath] = spec.paths[path];
-              }
-              spec.paths = newPaths;
+            // Remove "/besu-api/" from all paths
+            let newPaths = {};
+            for (let path in spec.paths) {
+                let newPath = path.replace(/^\/besu-api/, ""); 
+                newPaths[newPath] = spec.paths[path];
+            }
+            spec.paths = newPaths;
 
               // Load Redoc
               Redoc.init(spec, { hideSearch: true }, document.getElementById("redoc-container"));

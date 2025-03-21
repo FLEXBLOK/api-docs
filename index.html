@@ -9,40 +9,51 @@
           margin: 0;
           font-family: Arial, sans-serif;
       }
-      
-      /* Top Header Styling */
-      .top-header {
-          background: #111827;
-          padding: 15px;
-          display: flex;
-          align-items: center;
-      }
-      
-      /* Logo Styling */
-      .top-header img {
-          height: 50px;
-          margin-left: 15px;
-      }
-      
+
       /* White Background for Sidebar */
       .redoc-wrap .menu-content {
           background-color: white !important;
+          padding-top: 20px; /* Ensure space for the logo */
       }
 
-      /* Uppercase Sidebar Menu */
-      .menu-content span {
-          text-transform: uppercase !important;
+      /* Sidebar Logo Styling */
+      .sidebar-logo-container {
+          text-align: center;
+          margin-bottom: 20px;
       }
-      
+
+      .sidebar-logo {
+          width: 150px; /* Adjust width as needed */
+          display: block;
+          margin: 0 auto; /* Center the logo */
+      }
+
+      /* Style for menu headings */
+      .menu-content .menu-item-group {
+          font-size: 16px !important;
+          font-weight: bold !important;
+          color: #333;
+          margin-top: 10px;
+      }
+
+      /* Style for menu items */
+      .menu-content .menu-item {
+          font-size: 14px !important;
+          font-weight: normal !important;
+          color: #666;
+          padding-left: 10px;
+      }
+
       /* Ensure the main content height is correct */
       #redoc-container {
-          height: calc(100vh - 80px);
+          height: 100vh;
       }
 
       /* Hide Base URL */
       .api-content h2 small {
           display: none !important;
       }
+      
       .redoc-json-schema-view .json-schema-row:first-child {
           display: none !important;
       }
@@ -51,43 +62,50 @@
       .redoc-wrap .http-url {
           display: none !important;
       }
-  </style>
-</head>
-<body>
-  <div class="top-header">
-      <img src="flexblok-logo.png" alt="FLEXBLOK Logo">
-  </div>
+    </style>
+  </head>
+  <body>
 
-  <div id="redoc-container"></div>
+    <div id="redoc-container"></div>
 
-  <script>
-    async function fetchAndModifySpec() {
-        try {
-            const response = await fetch("https://inf.flexblok.io/besu-api/swagger.json");
-            let spec = await response.json();
+    <script>
+      async function fetchAndModifySpec() {
+          try {
+              const response = await fetch("https://inf.flexblok.io/besu-api/swagger.json");
+              let spec = await response.json();
 
-            // Remove "/besu-api/" from server URL
-            if (spec.servers && spec.servers.length > 0) {
-                spec.servers[0].url = "/";
-            }
+              // Remove "/besu-api/" from server URL
+              if (spec.servers && spec.servers.length > 0) {
+                  spec.servers[0].url = "/";
+              }
 
-            // Remove "/besu-api/" from all paths
-            let newPaths = {};
-            for (let path in spec.paths) {
-                let newPath = path.replace(/^\/besu-api/, ""); 
-                newPaths[newPath] = spec.paths[path];
-            }
-            spec.paths = newPaths;
+              // Remove "/besu-api/" from all paths
+              let newPaths = {};
+              for (let path in spec.paths) {
+                  let newPath = path.replace(/^\/besu-api/, ""); 
+                  newPaths[newPath] = spec.paths[path];
+              }
+              spec.paths = newPaths;
 
-            // Load Redoc with the modified spec
-            Redoc.init(spec, { hideHostname: true }, document.getElementById("redoc-container"));
+              // Load Redoc
+              Redoc.init(spec, { hideSearch: true }, document.getElementById("redoc-container"));
 
-        } catch (error) {
-            console.error("Error loading OpenAPI spec:", error);
-        }
-    }
+              // Wait for Redoc to render, then insert the logo into the sidebar
+              setTimeout(() => {
+                  let sidebar = document.querySelector('.menu-content');
+                  if (sidebar) {
+                      let logoDiv = document.createElement("div");
+                      logoDiv.className = "sidebar-logo-container";
+                      logoDiv.innerHTML = `<img src="flexblok-logo.png" alt="FLEXBLOK Logo" class="sidebar-logo">`;
+                      sidebar.prepend(logoDiv);
+                  }
+              }, 1000); // Delay to allow Redoc to load
+          } catch (error) {
+              console.error("Error loading OpenAPI spec:", error);
+          }
+      }
 
-    fetchAndModifySpec();
-  </script>
-</body>
+      fetchAndModifySpec();
+    </script>
+  </body>
 </html>
